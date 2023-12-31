@@ -42,19 +42,29 @@ export const searchImage = async (req, res) => {
 export const getImageInforById = async (req, res) => {
   try {
     const { imageId } = req.params;
-    let data = await prisma.hinh_anh.findMany({
+
+    const checkImg = await prisma.hinh_anh.findFirst({
       where: {
         hinh_id: Number(imageId),
       },
-      include: {
-        nguoi_dung: {
-          select: {
-            ho_ten: true,
+    });
+    if (checkImg) {
+      let data = await prisma.hinh_anh.findFirst({
+        where: {
+          hinh_id: Number(imageId),
+        },
+        include: {
+          nguoi_dung: {
+            select: {
+              ho_ten: true,
+            },
           },
         },
-      },
-    });
-    responseData(res, "Xử lý thành công", data, 200);
+      });
+      responseData(res, "Xử lý thành công", data, 200);
+    } else {
+      responseData(res, "Không tìm thấy hình ảnh", "", 200);
+    }
   } catch {
     responseData(res, "Lỗi tè le...", "", 500);
   }

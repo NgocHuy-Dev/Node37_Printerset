@@ -12,6 +12,7 @@ export const getCommentByImgId = async (req, res) => {
         hinh_id: Number(imageId),
       },
     });
+
     if (checkImageId) {
       let data = await prisma.binh_luan.findMany({
         where: {
